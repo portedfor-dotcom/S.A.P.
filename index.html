@@ -1,4 +1,6 @@
-<html lang="ru"><script src="blob:https://portedfor-dotcom.github.io/bc9508f2-5e1a-441c-bdb1-1b0f61342936"></script><head>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>СИНДИКАТ АЛОГО ПЛАМЕНИ // ТЕРМИНАЛ</title>
@@ -596,7 +598,7 @@ body {
 ::-webkit-scrollbar-thumb { background: var(--red-dim); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--red); }
 </style>
-<style type="text/css">.video-ads{display:none!important}#player-ads{display:none!important}#watch7-sidebar-ads{display:none!important}#AdSense{display:none!important}#homepage-sidebar-ads{display:none!important}#page-container>#page>#header{display:none!important}#content #page-manager #masthead-ad{display:none!important}#body-container #page-container #video-masthead-iframe{display:none!important}ytd-promoted-sparkles-web-renderer{display:none!important}ytd-compact-promoted-item-renderer{display:none!important}ytd-display-ad-renderer{display:none!important}#feedmodule-PRO{display:none!important}#homepage-chrome-side-promo{display:none!important}#search-pva{display:none!important}#watch-branded-actions{display:none!important}#watch-buy-urls{display:none!important}.carousel-offer-url-container{display:none!important}.promoted-videos{display:none!important}.watch-extra-info-column{display:none!important}.watch-extra-info-right{display:none!important}a[href^="http://www.youtube.com/cthru?"]{display:none!important}</style></head>
+</head>
 <body>
 
 <div class="monitor">
@@ -666,7 +668,7 @@ body {
       <div id="tab-registry" class="tab-content">
         <div class="card">
           <div class="card-title">РЕЕСТР УЧАСТНИКОВ</div>
-          <div id="registry-admin-btns" style="display: none; margin-bottom: 15px;">
+          <div id="registry-admin-btns" style="display:none;margin-bottom:15px;">
             <button class="btn" onclick="showMemberForm()">+ Добавить участника</button>
           </div>
           <div id="member-form" class="admin-form" style="display:none;">
@@ -689,7 +691,7 @@ body {
           </div>
           <table class="registry-table">
             <thead>
-              <tr><th>НИК</th><th>ЗВАНИЕ</th><th>ОЧКИ</th><th>СВЯЗЬ</th><th id="th-actions" style="display: none;">ДЕЙСТВИЯ</th></tr>
+              <tr><th>НИК</th><th>ЗВАНИЕ</th><th>ОЧКИ</th><th>СВЯЗЬ</th><th id="th-actions" style="display:none;">ДЕЙСТВИЯ</th></tr>
             </thead>
             <tbody id="registry-body"></tbody>
           </table>
@@ -700,7 +702,7 @@ body {
       <div id="tab-news" class="tab-content">
         <div class="card">
           <div class="card-title">ЛЕНТА НОВОСТЕЙ</div>
-          <div id="news-admin-btns" style="display: none; margin-bottom: 15px;">
+          <div id="news-admin-btns" style="display:none;margin-bottom:15px;">
             <button class="btn" onclick="showNewsForm()">+ Добавить новость</button>
           </div>
           <div id="news-form" class="admin-form" style="display:none;">
@@ -771,10 +773,10 @@ body {
       <!-- АДМИНИСТРАЦИЯ -->
       <div id="tab-admin" class="tab-content">
         <!-- Экран ввода пароля -->
-        <div id="admin-login-screen" style="display: none;">
+        <div id="admin-login-screen">
           <div class="admin-login-box">
             <div class="flame-icon" style="font-size:3rem;margin-bottom:20px;">🔥</div>
-            <h3>&gt; ДОСТУП ОГРАНИЧЕН</h3>
+            <h3>> ДОСТУП ОГРАНИЧЕН</h3>
             <div style="color:var(--text-dim);margin-bottom:25px;">Введите пароль администратора</div>
             <input type="password" id="admin-pw" placeholder="••••" onkeydown="if(event.key==='Enter')loginAdmin()">
             <br>
@@ -785,7 +787,7 @@ body {
         </div>
 
         <!-- Дашборд админа -->
-        <div id="admin-dashboard" class="admin-dashboard show">
+        <div id="admin-dashboard" class="admin-dashboard">
           <div class="card">
             <div class="card-title">ПАНЕЛЬ АДМИНИСТРАТОРА</div>
             <div style="color:var(--red-glow);margin-bottom:20px;text-align:center;font-size:1.1rem;">🔓 РЕЖИМ АДМИНИСТРАТОРА АКТИВЕН</div>
@@ -825,7 +827,7 @@ body {
 
       <!-- FOOTER -->
       <div class="footer">
-        С.А.П. // ТЕРМИНАЛ ДОСТУПА // <span id="footer-date">2026</span>
+        С.А.П. // ТЕРМИНАЛ ДОСТУПА // <span id="footer-date"></span>
       </div>
 
     </div>
@@ -833,6 +835,13 @@ body {
 </div>
 
 <script>
+// ====== ВСТРОЕННЫЕ ДАННЫЕ (сохраняются в файле) ======
+// При скачивании файла эти данные автоматически обновляются
+var DATA = {
+  members: [],
+  news: []
+};
+
 // ====== КОНФИГ ======
 var ADMIN_PASSWORD = '8217';
 var isAdmin = false;
@@ -852,15 +861,29 @@ var HIGH_RANKS = ['crimson', 'heart'];
 
 // ====== ДАННЫЕ ======
 function loadData() {
-  var m = localStorage.getItem('sap_members');
-  var n = localStorage.getItem('sap_news');
-  window.MEMBERS = m ? JSON.parse(m) : [];
-  window.NEWS = n ? JSON.parse(n) : [];
+  // Сначала пробуем загрузить из встроенного DATA (актуально после скачивания)
+  if (DATA.members && DATA.members.length > 0) {
+    window.MEMBERS = DATA.members;
+  } else {
+    // Fallback на localStorage (для обратной совместимости)
+    var m = localStorage.getItem('sap_members');
+    window.MEMBERS = m ? JSON.parse(m) : [];
+  }
+  
+  if (DATA.news && DATA.news.length > 0) {
+    window.NEWS = DATA.news;
+  } else {
+    var n = localStorage.getItem('sap_news');
+    window.NEWS = n ? JSON.parse(n) : [];
+  }
 }
 
 function saveData() {
   localStorage.setItem('sap_members', JSON.stringify(window.MEMBERS));
   localStorage.setItem('sap_news', JSON.stringify(window.NEWS));
+  // Обновляем встроенные данные (будут встроены при скачивании)
+  DATA.members = window.MEMBERS;
+  DATA.news = window.NEWS;
 }
 
 // ====== НАВИГАЦИЯ ======
@@ -953,11 +976,24 @@ function changePassword() {
 
 // ====== СКАЧИВАНИЕ ======
 function downloadSite() {
-  // Сбрасываем админ-режим перед сохранением, чтобы при открытии файла был обычный режим
+  // Сбрасываем админ-режим перед сохранением
   isAdmin = false;
   exitAdmin();
   saveData();
+  
+  // Получаем текущий HTML
   var html = document.documentElement.outerHTML;
+  
+  // Встраиваем актуальные данные в HTML-файл
+  var membersJSON = JSON.stringify(window.MEMBERS);
+  var newsJSON = JSON.stringify(window.NEWS);
+  
+  // Заменяем пустой DATA на данные с текущими участниками и новостями
+  html = html.replace(
+    'var DATA = {\\n  members: [],\\n  news: []\\n};',
+    'var DATA = {\\n  members: ' + membersJSON + ',\\n  news: ' + newsJSON + '\\n};'
+  );
+  
   var blob = new Blob([html], { type: 'text/html' });
   var url = URL.createObjectURL(blob);
   var a = document.createElement('a');
@@ -967,7 +1003,7 @@ function downloadSite() {
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
-  alert('> ФАЙЛ СОХРАНЁН. ЗАМЕНИТЕ СТАРЫЙ ФАЙЛ НА ЯНДЕКС/GOOGLE ДИСКЕ.');
+  alert('> ФАЙЛ СОХРАНЁН С ДАННЫМИ. ЗАМЕНИТЕ СТАРЫЙ ФАЙЛ НА ЯНДЕКС/GOOGLE ДИСКЕ ИЛИ GITHUB.');
 }
 
 // ====== INLINE EDIT ОЧКИ ======
@@ -1191,5 +1227,5 @@ window.onload = function() {
 };
 </script>
 
-
-</body></html>
+</body>
+</html>
